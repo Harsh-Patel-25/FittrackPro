@@ -1,0 +1,192 @@
+<!-- views/dashboard/dashboard.html -->
+<!-- Syllabus: ng-repeat, ng-if, ng-show, ng-hide, custom directives, $scope bindings -->
+<div class="page-wrap">
+
+  <!-- Greeting Row -->
+  <div class="greeting-row">
+    <div>
+      <h2 class="greeting-text">{{ dash.greeting() }}, {{ dash.firstName() }} 👋</h2>
+      <p class="greeting-sub">Here's your fitness summary for today</p>
+    </div>
+    <!-- ng-if (syllabus: ng-if) -->
+    <div class="streak-badge" ng-if="dash.summary && dash.summary.streak.current > 0">
+      <span class="streak-flame">🔥</span>
+      <div>
+        <div class="streak-num">{{ dash.summary.streak.current }}</div>
+        <div class="streak-lbl">Day Streak</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Skeleton -->
+  <div class="stats-grid" ng-show="dash.loading">
+    <!-- ng-repeat with limitTo filter (syllabus: Built-in Filters - LimitTo) -->
+    <div class="stat-card skeleton" ng-repeat="i in [1,2,3,4,5,6] | limitTo:6"></div>
+  </div>
+
+  <!-- Stat Cards using custom directive (syllabus: Custom Directive) -->
+  <div class="stats-grid" ng-show="!dash.loading && dash.summary">
+    <stat-card icon="🍽️"
+               value="dash.summary.today.caloriesIn"
+               label="Calories In"
+               unit="kcal"
+               progress="dash.calorieInPct()"
+               color="green">
+    </stat-card>
+    <stat-card icon="🔥"
+               value="dash.summary.today.caloriesBurned"
+               label="Calories Burned"
+               unit="kcal"
+               progress="dash.calorieOutPct()"
+               color="orange">
+    </stat-card>
+    <stat-card icon="💪"
+               value="dash.summary.today.protein"
+               label="Protein"
+               unit="g"
+               progress="dash.proteinPct()"
+               color="blue">
+    </stat-card>
+    <stat-card icon="🏋️"
+               value="dash.summary.today.workouts"
+               label="Workouts Today"
+               unit=""
+               progress="dash.workoutPct()"
+               color="green">
+    </stat-card>
+    <stat-card icon="💧"
+               value="dash.summary.today.water"
+               label="Water Intake"
+               unit="ml"
+               progress="dash.waterPct()"
+               color="blue">
+    </stat-card>
+    <stat-card icon="⏱️"
+               value="dash.summary.today.workoutDuration"
+               label="Active Time"
+               unit="min"
+               progress="dash.durationPct()"
+               color="purple">
+    </stat-card>
+  </div>
+
+  <!-- Weekly + Goals Row -->
+  <div class="two-col-grid">
+
+    <!-- Weekly Summary Card -->
+    <div class="card" ng-show="dash.summary">
+      <div class="card-hdr">
+        <h3>This Week</h3>
+        <a href="#!/progress" class="card-link">View all →</a>
+      </div>
+      <div class="weekly-row">
+        <div class="wstat-item">
+          <div class="wstat-val">{{ dash.summary.week.workoutCount }}</div>
+          <div class="wstat-lbl">Workouts</div>
+        </div>
+        <div class="wstat-sep"></div>
+        <div class="wstat-item">
+          <!-- Using caloriesFmt custom filter (syllabus: Creating Custom Filters) -->
+          <div class="wstat-val">{{ dash.summary.week.totalCaloriesBurned | caloriesFmt }}</div>
+          <div class="wstat-lbl">Burned</div>
+        </div>
+        <div class="wstat-sep"></div>
+        <div class="wstat-item">
+          <!-- Using durationFmt custom filter -->
+          <div class="wstat-val">{{ dash.summary.week.totalWorkoutDuration | durationFmt }}</div>
+          <div class="wstat-lbl">Active</div>
+        </div>
+        <div class="wstat-sep"></div>
+        <div class="wstat-item">
+          <!-- Built-in number filter (syllabus: Built-in Filters - Number) -->
+          <div class="wstat-val">{{ dash.summary.week.avgDailyCalories | number:0 }}</div>
+          <div class="wstat-lbl">Avg kcal/day</div>
+        </div>
+      </div>
+
+      <!-- Macro row -->
+      <div class="macro-legend">
+        <div class="macro-item">
+          <span class="macro-dot green"></span>
+          <span>Protein</span>
+          <strong>{{ dash.summary.today.protein | number:0 }}g</strong>
+        </div>
+        <div class="macro-item">
+          <span class="macro-dot blue"></span>
+          <span>Carbs</span>
+          <strong>{{ dash.summary.today.carbs | number:0 }}g</strong>
+        </div>
+        <div class="macro-item">
+          <span class="macro-dot orange"></span>
+          <span>Fat</span>
+          <strong>{{ dash.summary.today.fat | number:0 }}g</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals Card -->
+    <div class="card">
+      <div class="card-hdr">
+        <h3>Active Goals</h3>
+        <a href="#!/progress" class="card-link">Manage →</a>
+      </div>
+
+      <!-- ng-repeat (syllabus: ng-repeat) -->
+      <div class="goals-list" ng-show="dash.goals.length > 0">
+        <div class="goal-row" ng-repeat="goal in dash.goals">
+          <div class="goal-info">
+            <div class="goal-title-sm">{{ goal.title }}</div>
+            <div class="goal-meta-sm">{{ goal.currentValue || 0 }} / {{ goal.targetValue }} {{ goal.unit }}</div>
+          </div>
+          <!-- Custom progress-ring directive (syllabus: Creating Custom Directive) -->
+          <progress-ring percent="goal.progressPercent || 0"
+                         color="#38BDF8"
+                         size="44">
+          </progress-ring>
+        </div>
+      </div>
+
+      <div class="empty-card" ng-show="dash.goals.length === 0 && !dash.loading">
+        <p>No active goals yet</p>
+        <a href="#!/progress" class="btn-outline-sm">Set a Goal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Insights -->
+  <div class="card" ng-show="dash.insights.length > 0">
+    <div class="card-hdr"><h3>💡 Weekly Insights</h3></div>
+    <div class="insights-grid">
+      <!-- ng-repeat with ng-class (syllabus: ng-class) -->
+      <div class="insight-item"
+           ng-class="'insight-' + ins.type"
+           ng-repeat="ins in dash.insights">
+        <span class="ins-icon">{{ ins.icon }}</span>
+        <div>
+          <div class="ins-title">{{ ins.title }}</div>
+          <div class="ins-msg">{{ ins.message }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions-section">
+    <h3 class="section-heading">Quick Actions</h3>
+    <div class="actions-grid">
+      <!-- ng-repeat over action array (syllabus: Arrays as member in controller scope) -->
+      <a ng-repeat="action in [
+           {href:'#/workouts', icon:'🏋️', label:'Log Workout'},
+           {href:'#/nutrition', icon:'🥗', label:'Log Meal'},
+           {href:'#/progress', icon:'📊', label:'View Progress'},
+           {href:'#/settings', icon:'🎯', label:'Set Goals'}
+         ]"
+         href="{{ action.href }}"
+         class="action-card">
+        <span class="action-icon">{{ action.icon }}</span>
+        <span>{{ action.label }}</span>
+      </a>
+    </div>
+  </div>
+
+</div>

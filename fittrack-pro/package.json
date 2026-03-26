@@ -1,0 +1,11 @@
+{
+  "name": "fittrack-pro",
+  "version": "1.0.0",
+  "description": "FitTrack Pro – MEAN Stack Fitness Tracker (AngularJS 1.x)",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "seed": "cd backend && node utils/seed.js"
+  }
+}

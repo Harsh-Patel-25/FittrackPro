@@ -1,0 +1,76 @@
+<!-- views/auth/login.html -->
+<!-- Syllabus: Simple form, ng-model, ng-submit, ng-show, ng-disabled, Form Events CSS Classes -->
+<div class="auth-page">
+  <div class="auth-blob blob-1"></div>
+  <div class="auth-blob blob-2"></div>
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-badge-auth">⚡</div>
+      <h1>FitTrack <span class="green-text">Pro</span></h1>
+      <p>Your smart fitness companion</p>
+    </div>
+
+    <!-- ng-submit (syllabus: Form Events CSS Classes) -->
+    <form name="loginForm" ng-submit="auth.login()" novalidate class="auth-form">
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <!-- ng-model (syllabus: Object binding and expression) -->
+        <input id="email" type="email" name="email"
+               ng-model="auth.loginData.email"
+               ng-class="{'input-error': loginForm.email.$invalid && loginForm.email.$touched}"
+               placeholder="you@example.com"
+               required />
+        <!-- ng-show (syllabus: ng-show, ng-hide) -->
+        <span class="field-error"
+              ng-show="loginForm.email.$invalid && loginForm.email.$touched">
+          Valid email required
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <!-- ng-attr based on ng-model boolean -->
+          <input id="password" name="password"
+                 ng-attr-type="{{auth.showPassword ? 'text' : 'password'}}"
+                 ng-model="auth.loginData.password"
+                 ng-class="{'input-error': loginForm.password.$invalid && loginForm.password.$touched}"
+                 placeholder="••••••••"
+                 required />
+          <!-- ng-click (syllabus: ng-click Event Directive) -->
+          <button type="button" class="toggle-pw-btn"
+                  ng-click="auth.showPassword = !auth.showPassword">
+            {{ auth.showPassword ? '🙈' : '👁' }}
+          </button>
+        </div>
+        <span class="field-error"
+              ng-show="loginForm.password.$invalid && loginForm.password.$touched">
+          Password required
+        </span>
+      </div>
+
+      <!-- ng-show for error message -->
+      <div class="form-error-box" ng-show="auth.loginError">
+        {{ auth.loginError }}
+      </div>
+
+      <!-- ng-disabled (syllabus: ng-disabled) -->
+      <button type="submit"
+              class="btn-primary full-width"
+              ng-disabled="auth.loginLoading || loginForm.$invalid">
+        <span ng-hide="auth.loginLoading">Sign In</span>
+        <span ng-show="auth.loginLoading" class="spinner-sm"></span>
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      Don't have an account? <a href="#!/register">Sign up free</a>
+    </p>
+
+    <div class="demo-hint">
+      <strong>Demo:</strong> demo@fittrack.com &nbsp;/&nbsp; demo123
+    </div>
+  </div>
+</div>

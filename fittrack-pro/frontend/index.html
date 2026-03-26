@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="fitTrackApp">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitTrack Pro – Smart Fitness & Nutrition Tracker</title>
+  <meta name="description" content="Track workouts, nutrition and progress with FitTrack Pro." />
+  <meta name="theme-color" content="#0F172A" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="assets/css/design-system.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+
+  <!-- AngularJS 1.8.3 CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-animate.min.js"></script>
+</head>
+<body ng-controller="AppController">
+
+  <!-- App Shell: shown after login -->
+  <div ng-if="app.isAuthenticated()" class="app-shell">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" ng-class="{'collapsed': app.sidebarCollapsed}">
+      <div class="sidebar-logo">
+        <div class="logo-badge">⚡</div>
+        <span class="logo-text" ng-show="!app.sidebarCollapsed">FitTrack Pro</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a ng-repeat="item in app.navItems"
+           href="#!/{{ item.path }}"
+           class="nav-item"
+           ng-class="{'active': app.isActiveRoute(item.path)}"
+           title="{{ item.label }}">
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label" ng-show="!app.sidebarCollapsed">{{ item.label }}</span>
+          <span class="active-dot" ng-show="app.isActiveRoute(item.path)"></span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user" ng-show="!app.sidebarCollapsed">
+        <div class="user-avatar-sm">{{ app.userInitials() }}</div>
+        <div class="user-info-sm">
+          <div class="user-name-sm">{{ app.currentUser.name }}</div>
+          <div class="user-streak">🔥 {{ app.currentUser.streak.current || 0 }} day streak</div>
+        </div>
+      </div>
+
+      <button class="collapse-btn" ng-click="app.sidebarCollapsed = !app.sidebarCollapsed">
+        {{ app.sidebarCollapsed ? '→' : '←' }}
+      </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-area">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="page-heading">{{ app.currentPageTitle() }}</div>
+        </div>
+        <div class="topbar-right">
+          <div class="points-pill">
+            <span>⭐</span>
+            <span>{{ app.currentUser.totalPoints || 0 }} pts</span>
+          </div>
+          <button class="notif-btn">🔔</button>
+          <div class="topbar-avatar" ng-click="app.userMenuOpen = !app.userMenuOpen">
+            {{ app.userInitials() }}
+          </div>
+          <div class="user-dropdown" ng-show="app.userMenuOpen">
+            <a href="#!/settings" class="dd-item" ng-click="app.userMenuOpen=false">⚙️ Settings</a>
+            <div class="dd-sep"></div>
+            <button class="dd-item danger" ng-click="app.logout()">🚪 Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Route View -->
+      <main class="page-content" ng-view></main>
+    </div>
+  </div>
+
+  <!-- Auth Shell: shown when not logged in -->
+  <div ng-if="!app.isAuthenticated()" ng-view></div>
+
+  <!-- Toast Notification -->
+  <div class="toast" ng-show="app.toast.visible" ng-class="'toast-'+app.toast.type">
+    {{ app.toast.message }}
+  </div>
+
+  <!-- AngularJS App Modules -->
+  <script src="app/app.module.js"></script>
+
+  <!-- Services (must load before app.config so interceptor factory exists) -->
+  <script src="app/services/auth.service.js"></script>
+  <script src="app/services/http.interceptor.js"></script>
+  <script src="app/services/workout.service.js"></script>
+  <script src="app/services/nutrition.service.js"></script>
+  <script src="app/services/progress.service.js"></script>
+  <script src="app/services/goal.service.js"></script>
+  <script src="app/services/api.services.js"></script>
+
+  <!-- Config & Routes (after services so interceptor is registered) -->
+  <script src="app/app.config.js"></script>
+
+  <!-- Filters -->
+  <script src="app/filters/calories.filter.js"></script>
+  <script src="app/filters/duration.filter.js"></script>
+  <script src="app/filters/relativeDate.filter.js"></script>
+  <script src="app/filters/macroPercent.filter.js"></script>
+
+  <!-- Directives -->
+  <script src="app/directives/progressRing.directive.js"></script>
+  <script src="app/directives/statCard.directive.js"></script>
+  <script src="app/directives/barChart.directive.js"></script>
+  <script src="app/directives/lineChart.directive.js"></script>
+
+  <!-- Controllers -->
+  <script src="app/controllers/app.controller.js"></script>
+  <script src="app/controllers/auth.controller.js"></script>
+  <script src="app/controllers/dashboard.controller.js"></script>
+  <script src="app/controllers/workout.controller.js"></script>
+  <script src="app/controllers/nutrition.controller.js"></script>
+  <script src="app/controllers/progress.controller.js"></script>
+  <script src="app/controllers/settings.controller.js"></script>
+
+</body>
+</html>

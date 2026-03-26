@@ -1,0 +1,92 @@
+<!-- views/auth/register.html -->
+<!-- Syllabus: Forms, Custom Validation, ng-options, ng-model, ng-repeat -->
+<div class="auth-page">
+  <div class="auth-blob blob-1"></div>
+  <div class="auth-blob blob-2"></div>
+
+  <div class="auth-card auth-card-wide">
+    <div class="auth-logo">
+      <div class="logo-badge-auth">⚡</div>
+      <h1>Join FitTrack <span class="green-text">Pro</span></h1>
+      <p>Start your fitness journey today</p>
+    </div>
+
+    <form name="registerForm" ng-submit="auth.register(registerForm)" novalidate class="auth-form">
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" name="name"
+                 ng-model="auth.registerData.name"
+                 ng-class="{'input-error': registerForm.name.$invalid && registerForm.name.$touched}"
+                 placeholder="Alex Johnson"
+                 ng-minlength="2" required />
+          <span class="field-error" ng-show="registerForm.name.$error.required && registerForm.name.$touched">Name required</span>
+          <span class="field-error" ng-show="registerForm.name.$error.minlength && registerForm.name.$touched">Min 2 characters</span>
+        </div>
+
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email"
+                 ng-model="auth.registerData.email"
+                 ng-class="{'input-error': registerForm.email.$invalid && registerForm.email.$touched}"
+                 placeholder="you@example.com"
+                 required />
+          <span class="field-error" ng-show="registerForm.email.$invalid && registerForm.email.$touched">Valid email required</span>
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" name="password"
+                 ng-model="auth.registerData.password"
+                 ng-class="{'input-error': registerForm.password.$invalid && registerForm.password.$touched}"
+                 placeholder="Min 6 characters"
+                 ng-minlength="6" required />
+          <span class="field-error" ng-show="registerForm.password.$error.minlength && registerForm.password.$touched">Min 6 characters</span>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password *</label>
+          <input type="password" name="confirmPassword"
+                 ng-model="auth.registerData.confirmPassword"
+                 placeholder="Repeat password"
+                 required />
+        </div>
+      </div>
+
+      <div class="section-label">Profile (Optional)</div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Fitness Goal</label>
+          <!-- ng-options (syllabus: ng-options) -->
+          <select ng-model="auth.registerData.fitnessGoal"
+                  ng-options="g.value as g.label for g in auth.fitnessGoals">
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Activity Level</label>
+          <select ng-model="auth.registerData.activityLevel"
+                  ng-options="l.value as l.label for l in auth.activityLevels">
+          </select>
+        </div>
+      </div>
+
+      <div class="form-error-box" ng-show="auth.registerError">
+        {{ auth.registerError }}
+      </div>
+
+      <button type="submit" class="btn-primary full-width"
+              ng-disabled="auth.registerLoading || registerForm.$invalid">
+        <span ng-hide="auth.registerLoading">Create Account</span>
+        <span ng-show="auth.registerLoading" class="spinner-sm"></span>
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      Already have an account? <a href="#!/login">Sign in</a>
+    </p>
+  </div>
+</div>

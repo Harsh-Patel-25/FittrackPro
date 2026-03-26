@@ -1,0 +1,169 @@
+<!-- views/settings/settings.html -->
+<!-- Syllabus: ng-model, ng-options, ng-show, ng-if, Forms, $scope -->
+<div class="page-wrap">
+
+  <div class="page-hdr">
+    <div>
+      <h2 class="page-title">Settings ⚙️</h2>
+      <p class="page-sub">Manage your profile and preferences</p>
+    </div>
+  </div>
+
+  <div class="settings-layout">
+
+    <!-- Profile Card -->
+    <div class="settings-card">
+      <div class="card-section-title">👤 Profile</div>
+
+      <div class="avatar-row">
+        <div class="big-avatar">{{ st.initials() }}</div>
+        <div>
+          <div class="av-name">{{ st.user.name }}</div>
+          <div class="av-email">{{ st.user.email }}</div>
+          <div class="av-pts" ng-if="st.user.totalPoints">⭐ {{ st.user.totalPoints }} pts</div>
+        </div>
+      </div>
+
+      <!-- BMI Display -->
+      <div class="bmi-badge" ng-if="st.user.bmi">
+        BMI: <strong>{{ st.user.bmi }}</strong> – {{ st.bmiCategory(st.user.bmi) }}
+      </div>
+
+      <form name="profileForm" novalidate class="settings-form">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" ng-model="st.profileForm.name" required />
+        </div>
+
+        <div class="section-sep">Body Metrics</div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" ng-model="st.profileForm.age" placeholder="25" min="13" max="120" />
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <!-- ng-options (syllabus: ng-options) -->
+            <select ng-model="st.profileForm.gender"
+                    ng-options="g for g in st.genders">
+              <option value="">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Weight (kg)</label>
+            <input type="number" ng-model="st.profileForm.weight" placeholder="70" />
+          </div>
+          <div class="form-group">
+            <label>Height (cm)</label>
+            <input type="number" ng-model="st.profileForm.height" placeholder="175" />
+          </div>
+        </div>
+
+        <div class="section-sep">Fitness Profile</div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Fitness Goal</label>
+            <select ng-model="st.profileForm.fitnessGoal"
+                    ng-options="g for g in st.fitnessGoals">
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Activity Level</label>
+            <select ng-model="st.profileForm.activityLevel"
+                    ng-options="l for l in st.activityLevels">
+            </select>
+          </div>
+        </div>
+
+        <!-- ng-show for success / error -->
+        <div class="success-banner" ng-show="st.profileSaved">✅ Profile saved successfully!</div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-primary"
+                  ng-click="st.saveProfile()"
+                  ng-disabled="st.savingProfile">
+            {{ st.savingProfile ? 'Saving...' : 'Save Profile' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Column -->
+    <div class="settings-right">
+
+      <!-- Streak & Achievements -->
+      <div class="settings-card">
+        <div class="card-section-title">🏆 Achievements</div>
+        <div class="streak-grid">
+          <div class="streak-box">
+            <div class="sb-val">{{ st.user.streak && st.user.streak.current || 0 }}</div>
+            <div class="sb-lbl">Current Streak</div>
+          </div>
+          <div class="streak-box">
+            <div class="sb-val">{{ st.user.streak && st.user.streak.longest || 0 }}</div>
+            <div class="sb-lbl">Best Streak</div>
+          </div>
+          <div class="streak-box">
+            <div class="sb-val">{{ st.user.totalPoints || 0 }}</div>
+            <div class="sb-lbl">Total Points</div>
+          </div>
+        </div>
+
+        <!-- ng-repeat for achievements (syllabus: ng-repeat) -->
+        <div ng-if="st.user.achievements && st.user.achievements.length > 0">
+          <div class="achievement-row" ng-repeat="a in st.user.achievements">
+            <span class="ach-icon">{{ a.icon || '🏅' }}</span>
+            <div>
+              <div class="ach-name">{{ a.name }}</div>
+              <div class="ach-desc">{{ a.description }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="empty-ach" ng-if="!st.user.achievements || st.user.achievements.length === 0">
+          Complete workouts to earn achievements! 🎯
+        </div>
+      </div>
+
+      <!-- Change Password -->
+      <div class="settings-card">
+        <div class="card-section-title">🔒 Security</div>
+        <form name="pwForm" novalidate class="settings-form">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" ng-model="st.passwordForm.currentPassword" required />
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" ng-model="st.passwordForm.newPassword"
+                   ng-minlength="6" required />
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" ng-model="st.passwordForm.confirmPassword" required />
+          </div>
+
+          <div class="form-error-box" ng-show="st.pwError">{{ st.pwError }}</div>
+          <div class="success-banner" ng-show="st.pwSaved">✅ Password changed!</div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-outline"
+                    ng-click="st.changePassword()"
+                    ng-disabled="st.savingPw || pwForm.$invalid">
+              {{ st.savingPw ? 'Updating...' : 'Change Password' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Logout -->
+      <div class="settings-card danger-card">
+        <div class="card-section-title danger-title">⚠️ Account</div>
+        <button class="btn-danger" ng-click="st.logout()">🚪 Sign Out</button>
+      </div>
+
+    </div>
+  </div>
+</div>

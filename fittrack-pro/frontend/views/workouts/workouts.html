@@ -1,0 +1,215 @@
+<!-- views/workouts/workouts.html -->
+<!-- Syllabus: ng-repeat, ng-model, ng-options, ng-click, ng-show, ng-hide, ng-disabled, ng-change -->
+<div class="page-wrap">
+
+  <!-- Page Header -->
+  <div class="page-hdr">
+    <div>
+      <h2 class="page-title">Workouts 🏋️</h2>
+      <p class="page-sub">Track and manage your training sessions</p>
+    </div>
+    <!-- ng-click (syllabus: ng-click Event Directive) -->
+    <button class="btn-primary" ng-click="wk.openForm()">+ Log Workout</button>
+  </div>
+
+  <!-- Success message (ng-show) -->
+  <div class="success-banner" ng-show="wk.successMsg">✅ {{ wk.successMsg }}</div>
+
+  <!-- Filter Chips (ng-repeat + ng-click + ng-class) -->
+  <div class="filter-row">
+    <button ng-repeat="ft in wk.filterTypes"
+            class="filter-chip"
+            ng-class="{'active': wk.activeFilter === ft.value}"
+            ng-click="wk.setFilter(ft.value)">
+      {{ ft.label }}
+    </button>
+  </div>
+
+  <!-- Weekly Stats Bar -->
+  <div class="weekly-bar" ng-show="wk.weeklyStats">
+    <div class="wstat-item">
+      <span class="wstat-val">{{ wk.weeklyStats.totals.workoutCount || 0 }}</span>
+      <span class="wstat-lbl">Sessions</span>
+    </div>
+    <div class="wstat-sep"></div>
+    <div class="wstat-item">
+      <span class="wstat-val">{{ wk.weeklyStats.totals.totalCalories || 0 | caloriesFmt }}</span>
+      <span class="wstat-lbl">Burned This Week</span>
+    </div>
+    <div class="wstat-sep"></div>
+    <div class="wstat-item">
+      <span class="wstat-val">{{ wk.weeklyStats.totals.totalDuration || 0 | durationFmt }}</span>
+      <span class="wstat-lbl">Total Active Time</span>
+    </div>
+  </div>
+
+  <!-- Loading Skeleton -->
+  <div class="workouts-grid" ng-show="wk.loading">
+    <div class="workout-card skeleton" ng-repeat="i in [1,2,3,4,5,6]"></div>
+  </div>
+
+  <!-- Workouts Grid (ng-repeat) -->
+  <div class="workouts-grid" ng-hide="wk.loading">
+    <div class="workout-card" ng-repeat="w in wk.workouts">
+      <div class="wcard-header">
+        <span class="type-badge" ng-class="'badge-'+w.type">{{ wk.typeLabel(w.type) }}</span>
+        <div class="card-actions">
+          <!-- ng-click with parameter passing (syllabus: Passing parameters to method) -->
+          <button class="icon-btn" ng-click="wk.editWorkout(w)" title="Edit">✏️</button>
+          <button class="icon-btn danger" ng-click="wk.deleteWorkout(w._id)" title="Delete">🗑</button>
+        </div>
+      </div>
+
+      <h3 class="wcard-title">{{ w.title }}</h3>
+
+      <div class="wcard-meta">
+        <!-- Using relativeDate custom filter (syllabus: Creating Custom Filters) -->
+        <span>📅 {{ w.date | relativeDate }}</span>
+        <!-- Using durationFmt custom filter -->
+        <span>⏱ {{ w.duration | durationFmt }}</span>
+        <!-- Using caloriesFmt custom filter -->
+        <span>🔥 {{ w.totalCaloriesBurned | caloriesFmt }}</span>
+      </div>
+
+      <div class="intensity-row">
+        <div class="intensity-track">
+          <div class="intensity-fill" ng-style="{width: wk.intensityWidth(w.intensity)}"></div>
+        </div>
+        <!-- uppercase filter (syllabus: Built-in Filters - Uppercase) -->
+        <span class="intensity-lbl">{{ w.intensity | uppercase }}</span>
+      </div>
+
+      <!-- ng-if for exercises (syllabus: ng-if) -->
+      <div class="ex-chips" ng-if="w.exercises && w.exercises.length">
+        <!-- limitTo filter (syllabus: Built-in Filters - LimitTo) -->
+        <span class="ex-chip" ng-repeat="ex in w.exercises | limitTo:3">{{ ex.name }}</span>
+        <span class="ex-more" ng-if="w.exercises.length > 3">+{{ w.exercises.length - 3 }}</span>
+      </div>
+
+      <div class="mood-row" ng-if="w.mood">
+        <span>{{ wk.moodEmoji(w.mood) }}</span>
+        <span class="mood-lbl">{{ w.mood }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State (ng-show) -->
+  <div class="empty-state" ng-show="!wk.loading && wk.workouts.length === 0">
+    <div class="empty-icon">🏋️</div>
+    <h3>No workouts yet</h3>
+    <p>Log your first session to start tracking progress</p>
+    <button class="btn-primary" ng-click="wk.openForm()">Log Workout</button>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" ng-show="wk.totalPages > 1">
+    <button class="page-btn" ng-disabled="wk.currentPage === 1"
+            ng-click="wk.changePage(wk.currentPage - 1)">← Prev</button>
+    <span class="page-info">{{ wk.currentPage }} / {{ wk.totalPages }}</span>
+    <button class="page-btn" ng-disabled="wk.currentPage === wk.totalPages"
+            ng-click="wk.changePage(wk.currentPage + 1)">Next →</button>
+  </div>
+
+  <!-- ── Modal (ng-show) ───────────────────────────────────────────────────── -->
+  <div class="modal-overlay" ng-show="wk.showForm" ng-click="wk.closeForm()">
+    <div class="modal" ng-click="$event.stopPropagation()">
+
+      <div class="modal-hdr">
+        <h3>{{ wk.editingId ? 'Edit Workout' : 'Log Workout' }}</h3>
+        <button class="modal-close" ng-click="wk.closeForm()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <form name="workoutForm" novalidate>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Title *</label>
+              <input type="text" ng-model="wk.form.title" placeholder="e.g. Push Day A" required />
+            </div>
+            <div class="form-group">
+              <label>Type *</label>
+              <!-- ng-options (syllabus: ng-options) -->
+              <select ng-model="wk.form.type"
+                      ng-options="t as wk.typeLabel(t) for t in wk.workoutTypes">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Date *</label>
+              <input type="date" ng-model="wk.form.date" required />
+            </div>
+            <div class="form-group">
+              <label>Duration (min) *</label>
+              <input type="number" ng-model="wk.form.duration" placeholder="45" min="1" required />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Intensity</label>
+              <select ng-model="wk.form.intensity"
+                      ng-options="i for i in wk.intensities">
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Mood</label>
+              <select ng-model="wk.form.mood"
+                      ng-options="m for m in wk.moods">
+              </select>
+            </div>
+          </div>
+
+          <!-- Exercises (Working with Arrays: push/splice) -->
+          <div class="exercises-box">
+            <div class="ex-box-hdr">
+              <span>Exercises</span>
+              <button type="button" class="add-item-btn" ng-click="wk.addExercise()">+ Add</button>
+            </div>
+
+            <!-- ng-repeat over exercises array -->
+            <div class="ex-row" ng-repeat="ex in wk.form.exercises">
+              <div class="ex-grid">
+                <input type="text" ng-model="ex.name" placeholder="Exercise name" class="ex-name" />
+                <select ng-model="ex.category"
+                        ng-options="c for c in wk.exCategories"
+                        class="ex-cat">
+                </select>
+                <input type="number" ng-model="ex.sets" placeholder="Sets" class="ex-num" />
+                <input type="number" ng-model="ex.reps" placeholder="Reps" class="ex-num" />
+                <input type="number" ng-model="ex.weight" placeholder="kg" class="ex-num" />
+                <input type="number" ng-model="ex.caloriesBurned" placeholder="kcal" class="ex-num" />
+                <!-- ng-click with $index (syllabus: Passing parameters to method) -->
+                <button type="button" class="ex-del" ng-click="wk.removeExercise($index)">✕</button>
+              </div>
+            </div>
+
+            <div class="ex-empty" ng-show="wk.form.exercises.length === 0">
+              No exercises added yet. Click + Add to begin.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea ng-model="wk.form.notes" placeholder="Optional notes..." rows="2"></textarea>
+          </div>
+
+          <div class="form-error-box" ng-show="wk.error">{{ wk.error }}</div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" ng-click="wk.closeForm()">Cancel</button>
+            <button type="button" class="btn-primary"
+                    ng-click="wk.saveWorkout()"
+                    ng-disabled="wk.saving || !wk.form.title || !wk.form.duration">
+              {{ wk.saving ? 'Saving...' : (wk.editingId ? 'Update' : 'Log Workout') }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

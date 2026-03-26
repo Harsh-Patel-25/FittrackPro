@@ -1,0 +1,224 @@
+<!-- views/progress/progress.html -->
+<!-- Syllabus: custom directives bar-chart, line-chart, progress-ring, ng-repeat, ng-options -->
+<div class="page-wrap">
+
+  <div class="page-hdr">
+    <div>
+      <h2 class="page-title">Progress 📈</h2>
+      <p class="page-sub">Track your fitness journey over time</p>
+    </div>
+    <div class="hdr-actions">
+      <!-- ng-options with object array (syllabus: ng-options) -->
+      <select class="period-select" ng-model="pg.selectedMonth"
+              ng-change="pg.loadAll()"
+              ng-options="m.value as m.label for m in pg.monthOptions">
+      </select>
+      <button class="btn-primary" ng-click="pg.openGoalForm()">+ New Goal</button>
+    </div>
+  </div>
+
+  <!-- Monthly Summary -->
+  <div class="summary-cards" ng-show="!pg.loading">
+    <div class="summary-card">
+      <div class="sc-icon">💪</div>
+      <div class="sc-val">{{ pg.totalWorkoutsMonth() }}</div>
+      <div class="sc-lbl">Workouts</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-icon">🔥</div>
+      <div class="sc-val">{{ pg.totalCalBurnedMonth() | caloriesFmt }}</div>
+      <div class="sc-lbl">Calories Burned</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-icon">⏱️</div>
+      <div class="sc-val">{{ pg.totalDurationMonth() | durationFmt }}</div>
+      <div class="sc-lbl">Active Time</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-icon">🥗</div>
+      <!-- number filter (syllabus: Built-in Filters) -->
+      <div class="sc-val">{{ pg.avgCaloriesMonth() | number:0 }}</div>
+      <div class="sc-lbl">Avg kcal/day</div>
+    </div>
+  </div>
+
+  <!-- Charts Row using Custom Directives (syllabus: Creating Custom Directive) -->
+  <div class="charts-row">
+    <div class="card chart-card">
+      <div class="card-hdr">
+        <h3>Workout Activity</h3>
+        <span class="legend-pill green">● Calories Burned</span>
+      </div>
+      <!-- bar-chart custom directive -->
+      <bar-chart data="pg.workoutChartData" color="#22C55E" height="160"></bar-chart>
+    </div>
+
+    <div class="card chart-card">
+      <div class="card-hdr">
+        <h3>Calorie Intake</h3>
+        <span class="legend-pill blue">● Daily Calories</span>
+      </div>
+      <!-- line-chart custom directive -->
+      <line-chart data="pg.nutritionChartData" color="#38BDF8"></line-chart>
+    </div>
+  </div>
+
+  <!-- Goals Section -->
+  <div class="goals-section">
+    <div class="goals-hdr-row">
+      <h3>Goals</h3>
+      <!-- Filter buttons (ng-click + ng-class) -->
+      <div class="goals-filter">
+        <button class="filter-chip" ng-class="{'active': pg.goalFilter==='active'}"
+                ng-click="pg.goalFilter='active'">Active</button>
+        <button class="filter-chip" ng-class="{'active': pg.goalFilter==='completed'}"
+                ng-click="pg.goalFilter='completed'">Completed</button>
+        <button class="filter-chip" ng-class="{'active': pg.goalFilter==='all'}"
+                ng-click="pg.goalFilter='all'">All</button>
+      </div>
+    </div>
+
+    <!-- Goals Grid (ng-repeat with filter) -->
+    <div class="goals-grid">
+      <div class="goal-card"
+           ng-repeat="goal in pg.filteredGoals()"
+           ng-class="{'goal-done': goal.isCompleted}">
+
+        <div class="goal-card-top">
+          <span class="period-tag">{{ goal.period }}</span>
+          <div class="goal-card-acts">
+            <button class="icon-btn" ng-click="pg.editGoal(goal)">✏️</button>
+            <button class="icon-btn danger" ng-click="pg.deleteGoal(goal._id)">🗑</button>
+          </div>
+        </div>
+
+        <div class="goal-body">
+          <!-- progress-ring custom directive (syllabus: Creating Custom Directive) -->
+          <progress-ring percent="goal.progressPercent || 0"
+                         color="{{ goal.isCompleted ? '#22C55E' : '#38BDF8' }}"
+                         size="72">
+          </progress-ring>
+
+          <div class="goal-detail">
+            <h4 class="goal-name">{{ goal.title }}</h4>
+            <p class="goal-desc" ng-if="goal.description">{{ goal.description }}</p>
+            <div class="goal-prog-txt">
+              {{ goal.currentValue || 0 }} / {{ goal.targetValue }} {{ goal.unit }}
+            </div>
+            <div class="goal-days" ng-if="goal.daysRemaining !== null && goal.daysRemaining > 0">
+              {{ goal.daysRemaining }} days left
+            </div>
+            <button class="update-prog-btn"
+                    ng-if="!goal.isCompleted"
+                    ng-click="pg.openUpdateProgress(goal)">
+              Update Progress
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Goals -->
+    <div class="empty-state" ng-show="pg.filteredGoals().length === 0 && !pg.loading">
+      <div class="empty-icon">🎯</div>
+      <h3>No goals yet</h3>
+      <p>Set goals to stay motivated and track your progress</p>
+      <button class="btn-primary" ng-click="pg.openGoalForm()">Set a Goal</button>
+    </div>
+  </div>
+
+  <!-- Insights -->
+  <div class="card" ng-show="pg.insights.length > 0">
+    <div class="card-hdr"><h3>💡 Weekly Insights</h3></div>
+    <div class="insights-list">
+      <div class="insight-item"
+           ng-repeat="ins in pg.insights"
+           ng-class="'insight-'+ins.type">
+        <span class="ins-icon">{{ ins.icon }}</span>
+        <div>
+          <div class="ins-title">{{ ins.title }}</div>
+          <div class="ins-msg">{{ ins.message }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Goal Form Modal ────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" ng-show="pg.showGoalForm" ng-click="pg.closeGoalForm()">
+    <div class="modal" ng-click="$event.stopPropagation()">
+      <div class="modal-hdr">
+        <h3>{{ pg.editingGoalId ? 'Edit Goal' : 'Set New Goal' }}</h3>
+        <button class="modal-close" ng-click="pg.closeGoalForm()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form novalidate>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Goal Title *</label>
+              <input type="text" ng-model="pg.goalForm.title" placeholder="e.g. Daily Protein Target" />
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <select ng-model="pg.goalForm.type" ng-options="t for t in pg.goalTypes"></select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Target Value *</label>
+              <input type="number" ng-model="pg.goalForm.targetValue" placeholder="150" />
+            </div>
+            <div class="form-group">
+              <label>Unit *</label>
+              <input type="text" ng-model="pg.goalForm.unit" placeholder="g, kcal, days..." />
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Period</label>
+              <select ng-model="pg.goalForm.period" ng-options="p for p in pg.periods"></select>
+            </div>
+            <div class="form-group">
+              <label>End Date</label>
+              <input type="date" ng-model="pg.goalForm.endDate" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" ng-model="pg.goalForm.description" placeholder="Optional description" />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" ng-click="pg.closeGoalForm()">Cancel</button>
+            <button type="button" class="btn-primary"
+                    ng-click="pg.saveGoal()"
+                    ng-disabled="pg.savingGoal || !pg.goalForm.title || !pg.goalForm.targetValue">
+              {{ pg.savingGoal ? 'Saving...' : (pg.editingGoalId ? 'Update Goal' : 'Set Goal') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Update Progress Modal ──────────────────────────────────────────────── -->
+  <div class="modal-overlay" ng-show="pg.showProgressModal" ng-click="pg.showProgressModal=false">
+    <div class="modal modal-sm" ng-click="$event.stopPropagation()">
+      <div class="modal-hdr">
+        <h3>Update Progress</h3>
+        <button class="modal-close" ng-click="pg.showProgressModal=false">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="prog-goal-name">{{ pg.updatingGoal.title }}</p>
+        <p class="prog-goal-target">Target: {{ pg.updatingGoal.targetValue }} {{ pg.updatingGoal.unit }}</p>
+        <div class="form-group">
+          <label>Current Value</label>
+          <input type="number" ng-model="pg.progressValue" placeholder="Enter current value" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn-ghost" ng-click="pg.showProgressModal=false">Cancel</button>
+          <button class="btn-primary" ng-click="pg.submitProgress()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,176 @@
+<!-- views/nutrition/nutrition.html -->
+<!-- Syllabus: ng-repeat, ng-model, ng-options, ng-change, ng-if, ng-show -->
+<div class="page-wrap">
+
+  <div class="page-hdr">
+    <div>
+      <h2 class="page-title">Nutrition 🥗</h2>
+      <p class="page-sub">Track your meals and macronutrients</p>
+    </div>
+    <div class="hdr-actions">
+      <!-- ng-model + ng-change (syllabus: ng-change) -->
+      <input type="date" class="date-input"
+             ng-model="nt.selectedDate"
+             ng-change="nt.changeDate()" />
+      <button class="btn-primary" ng-click="nt.openForm()">+ Log Meal</button>
+    </div>
+  </div>
+
+  <div class="success-banner" ng-show="nt.successMsg">✅ {{ nt.successMsg }}</div>
+
+  <!-- Daily Summary Cards -->
+  <div class="macro-cards" ng-show="nt.dailySummary">
+    <div class="macro-card">
+      <div class="mc-icon">🔥</div>
+      <!-- number filter (syllabus: Built-in Filters - Number) -->
+      <div class="mc-val">{{ nt.dailySummary.summary.totalCalories | number:0 }}</div>
+      <div class="mc-label">Calories</div>
+      <div class="mc-goal">Goal: 2000 kcal</div>
+      <div class="mc-bar"><div class="mc-fill green" ng-style="{width: nt.pct(nt.dailySummary.summary.totalCalories, 2000) + '%'}"></div></div>
+    </div>
+    <div class="macro-card">
+      <div class="mc-icon">💪</div>
+      <div class="mc-val">{{ nt.dailySummary.summary.totalProtein | number:0 }}g</div>
+      <div class="mc-label">Protein</div>
+      <div class="mc-goal">Goal: 150g</div>
+      <div class="mc-bar"><div class="mc-fill blue" ng-style="{width: nt.pct(nt.dailySummary.summary.totalProtein, 150) + '%'}"></div></div>
+    </div>
+    <div class="macro-card">
+      <div class="mc-icon">🌾</div>
+      <div class="mc-val">{{ nt.dailySummary.summary.totalCarbs | number:0 }}g</div>
+      <div class="mc-label">Carbs</div>
+      <div class="mc-goal">Goal: 250g</div>
+      <div class="mc-bar"><div class="mc-fill orange" ng-style="{width: nt.pct(nt.dailySummary.summary.totalCarbs, 250) + '%'}"></div></div>
+    </div>
+    <div class="macro-card">
+      <div class="mc-icon">🥑</div>
+      <div class="mc-val">{{ nt.dailySummary.summary.totalFat | number:0 }}g</div>
+      <div class="mc-label">Fat</div>
+      <div class="mc-goal">Goal: 65g</div>
+      <div class="mc-bar"><div class="mc-fill yellow" ng-style="{width: nt.pct(nt.dailySummary.summary.totalFat, 65) + '%'}"></div></div>
+    </div>
+    <div class="macro-card">
+      <div class="mc-icon">💧</div>
+      <div class="mc-val">{{ nt.dailySummary.summary.totalWater | number:0 }}ml</div>
+      <div class="mc-label">Water</div>
+      <div class="mc-goal">Goal: 2500ml</div>
+      <div class="mc-bar"><div class="mc-fill blue" ng-style="{width: nt.pct(nt.dailySummary.summary.totalWater, 2500) + '%'}"></div></div>
+    </div>
+  </div>
+
+  <!-- Meal Type Sections (ng-repeat over mealTypes array) -->
+  <div class="meal-section" ng-repeat="mealType in nt.mealTypes">
+    <div class="meal-type-hdr">
+      <span class="mt-icon">{{ nt.mealTypeIcon(mealType) }}</span>
+      <!-- titlecase (capitalize) using uppercase/lowercase built-in filters workaround -->
+      <span class="mt-name">{{ mealType }}</span>
+      <span class="mt-cals">{{ nt.mealTypeCalories(mealType) | caloriesFmt }}</span>
+    </div>
+
+    <!-- Logs for this meal type -->
+    <div ng-repeat="log in nt.logsByMealType(mealType)" class="meal-log-card">
+      <div class="log-hdr">
+        <span class="log-time">{{ log.date | relativeDate }}</span>
+        <div class="log-actions">
+          <button class="icon-btn" ng-click="nt.editLog(log)">✏️</button>
+          <button class="icon-btn danger" ng-click="nt.deleteLog(log._id)">🗑</button>
+        </div>
+      </div>
+      <div class="food-list">
+        <div class="food-item" ng-repeat="food in log.foods">
+          <span class="food-name">{{ food.name }}</span>
+          <span class="food-qty">{{ food.quantity }}{{ food.unit }}</span>
+          <span class="food-cals">{{ food.calories | caloriesFmt }}</span>
+        </div>
+      </div>
+      <div class="log-macros">
+        <span>P: {{ log.totalProtein | number:1 }}g</span>
+        <span>C: {{ log.totalCarbs | number:1 }}g</span>
+        <span>F: {{ log.totalFat | number:1 }}g</span>
+        <span ng-if="log.water">💧 {{ log.water }}ml</span>
+      </div>
+    </div>
+
+    <div class="empty-meal" ng-show="nt.logsByMealType(mealType).length === 0">
+      No {{ mealType }} logged today
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" ng-show="!nt.loading && nt.logs.length === 0">
+    <div class="empty-icon">🥗</div>
+    <h3>Nothing logged today</h3>
+    <p>Start tracking your meals to hit your nutrition goals</p>
+    <button class="btn-primary" ng-click="nt.openForm()">Log Meal</button>
+  </div>
+
+  <!-- ── Meal Modal ─────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" ng-show="nt.showForm" ng-click="nt.closeForm()">
+    <div class="modal modal-wide" ng-click="$event.stopPropagation()">
+      <div class="modal-hdr">
+        <h3>{{ nt.editingId ? 'Edit Meal' : 'Log Meal' }}</h3>
+        <button class="modal-close" ng-click="nt.closeForm()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form novalidate>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Meal Type *</label>
+              <select ng-model="nt.form.mealType"
+                      ng-options="m as nt.mealTypeIcon(m)+' '+m for m in nt.mealTypes">
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" ng-model="nt.form.date" />
+            </div>
+          </div>
+
+          <!-- Food Items -->
+          <div class="exercises-box">
+            <div class="ex-box-hdr">
+              <span>Food Items</span>
+              <button type="button" class="add-item-btn" ng-click="nt.addFood()">+ Add Food</button>
+            </div>
+            <div class="food-row" ng-repeat="food in nt.form.foods">
+              <div class="food-grid">
+                <input type="text"   ng-model="food.name"     placeholder="Food name" class="f-name" />
+                <input type="number" ng-model="food.quantity" placeholder="Qty"       class="f-num" />
+                <select ng-model="food.unit" ng-options="u for u in nt.units" class="f-unit"></select>
+                <input type="number" ng-model="food.calories" placeholder="kcal"      class="f-num" />
+                <input type="number" ng-model="food.protein"  placeholder="P(g)"      class="f-num" />
+                <input type="number" ng-model="food.carbs"    placeholder="C(g)"      class="f-num" />
+                <input type="number" ng-model="food.fat"      placeholder="F(g)"      class="f-num" />
+                <button type="button" class="ex-del" ng-click="nt.removeFood($index)">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Water (ml)</label>
+              <input type="number" ng-model="nt.form.water" placeholder="500" />
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <input type="text" ng-model="nt.form.notes" placeholder="Optional notes" />
+            </div>
+          </div>
+
+          <div class="form-error-box" ng-show="nt.error">{{ nt.error }}</div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" ng-click="nt.closeForm()">Cancel</button>
+            <button type="button" class="btn-primary"
+                    ng-click="nt.saveLog()"
+                    ng-disabled="nt.saving">
+              {{ nt.saving ? 'Saving...' : 'Log Meal' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

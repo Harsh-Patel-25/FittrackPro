@@ -10,11 +10,11 @@ function ($scope, $location, $window, AuthService) {
 
   // ── Nav Items (ngFor equivalent: ng-repeat) ────────────────────────────────
   vm.navItems = [
-    { path: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { path: 'workouts',  label: 'Workouts',  icon: '🏋️'  },
-    { path: 'nutrition', label: 'Nutrition', icon: '🥗'  },
-    { path: 'progress',  label: 'Progress',  icon: '📈'  },
-    { path: 'settings',  label: 'Settings',  icon: '⚙️'  }
+    { path: 'dashboard', label: 'Dashboard', icon: 'fa-house' },
+    { path: 'workouts',  label: 'Workouts',  icon: 'fa-dumbbell'  },
+    { path: 'nutrition', label: 'Nutrition', icon: 'fa-utensils'  },
+    { path: 'progress',  label: 'Progress',  icon: 'fa-chart-line'  },
+    { path: 'settings',  label: 'Settings',  icon: 'fa-gear'  }
   ];
 
   vm.sidebarCollapsed = false;

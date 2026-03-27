@@ -24,13 +24,13 @@ function ($scope, WorkoutService) {
 
   // ── Filter types (ng-repeat example) ──────────────────────────────────────
   vm.filterTypes = [
-    { value: 'all',         label: '🗂 All' },
-    { value: 'strength',    label: '💪 Strength' },
-    { value: 'cardio',      label: '🏃 Cardio' },
-    { value: 'hiit',        label: '⚡ HIIT' },
-    { value: 'flexibility', label: '🧘 Flexibility' },
-    { value: 'mixed',       label: '🔀 Mixed' },
-    { value: 'sports',      label: '⚽ Sports' }
+    { value: 'all',         label: 'All',           icon: 'fa-layer-group' },
+    { value: 'strength',    label: 'Strength',      icon: 'fa-dumbbell' },
+    { value: 'cardio',      label: 'Cardio',        icon: 'fa-person-running' },
+    { value: 'hiit',        label: 'HIIT',          icon: 'fa-bolt' },
+    { value: 'flexibility', label: 'Flexibility',    icon: 'fa-person-walking' },
+    { value: 'mixed',       label: 'Mixed',         icon: 'fa-shuffle' },
+    { value: 'sports',      label: 'Sports',        icon: 'fa-volleyball' }
   ];
 
   // ── ng-options data arrays ─────────────────────────────────────────────────
@@ -144,7 +144,7 @@ function ($scope, WorkoutService) {
     promise
       .then(function () {
         vm.saving      = false;
-        vm.successMsg  = vm.editingId ? 'Workout updated!' : 'Workout logged! 🎉';
+        vm.successMsg  = vm.editingId ? 'Workout updated!' : 'Workout logged!';
         vm.closeForm();
         vm.loadWorkouts();
         vm.loadWeeklyStats();
@@ -165,9 +165,15 @@ function ($scope, WorkoutService) {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   vm.typeLabel = function (t) {
-    var map = { strength:'💪 Strength', cardio:'🏃 Cardio', hiit:'⚡ HIIT',
-                flexibility:'🧘 Flexibility', mixed:'🔀 Mixed', sports:'⚽ Sports' };
+    var map = { strength:'Strength', cardio:'Cardio', hiit:'HIIT',
+                flexibility:'Flexibility', mixed:'Mixed', sports:'Sports' };
     return map[t] || t;
+  };
+
+  vm.typeIcon = function (t) {
+    var map = { strength:'fa-dumbbell', cardio:'fa-person-running', hiit:'fa-bolt',
+                flexibility:'fa-person-walking', mixed:'fa-shuffle', sports:'fa-volleyball' };
+    return map[t] || 'fa-dumbbell';
   };
 
   vm.intensityWidth = function (i) {
@@ -175,8 +181,8 @@ function ($scope, WorkoutService) {
     return m[i] || '50%';
   };
 
-  vm.moodEmoji = function (m) {
-    var map = { terrible:'😤', bad:'😞', okay:'😐', good:'😊', great:'🔥' };
-    return map[m] || '😊';
+  vm.moodIcon = function (m) {
+    var map = { terrible:'fa-face-angry', bad:'fa-face-frown', okay:'fa-face-meh', good:'fa-face-smile', great:'fa-fire' };
+    return map[m] || 'fa-face-smile';
   };
 }]);

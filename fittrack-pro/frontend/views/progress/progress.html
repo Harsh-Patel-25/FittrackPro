@@ -4,7 +4,7 @@
 
   <div class="page-hdr">
     <div>
-      <h2 class="page-title">Progress 📈</h2>
+      <h2 class="page-title">Progress <i class="fa-solid fa-chart-line"></i></h2>
       <p class="page-sub">Track your fitness journey over time</p>
     </div>
     <div class="hdr-actions">
@@ -13,29 +13,29 @@
               ng-change="pg.loadAll()"
               ng-options="m.value as m.label for m in pg.monthOptions">
       </select>
-      <button class="btn-primary" ng-click="pg.openGoalForm()">+ New Goal</button>
+      <button class="btn-primary" ng-click="pg.openGoalForm()"><i class="fa-solid fa-plus"></i> New Goal</button>
     </div>
   </div>
 
   <!-- Monthly Summary -->
   <div class="summary-cards" ng-show="!pg.loading">
     <div class="summary-card">
-      <div class="sc-icon">💪</div>
+      <div class="sc-icon"><i class="fa-solid fa-dumbbell" style="color: #22C55E;"></i></div>
       <div class="sc-val">{{ pg.totalWorkoutsMonth() }}</div>
       <div class="sc-lbl">Workouts</div>
     </div>
     <div class="summary-card">
-      <div class="sc-icon">🔥</div>
+      <div class="sc-icon"><i class="fa-solid fa-fire" style="color: #FB923C;"></i></div>
       <div class="sc-val">{{ pg.totalCalBurnedMonth() | caloriesFmt }}</div>
       <div class="sc-lbl">Calories Burned</div>
     </div>
     <div class="summary-card">
-      <div class="sc-icon">⏱️</div>
+      <div class="sc-icon"><i class="fa-solid fa-stopwatch" style="color: #A78BFA;"></i></div>
       <div class="sc-val">{{ pg.totalDurationMonth() | durationFmt }}</div>
       <div class="sc-lbl">Active Time</div>
     </div>
     <div class="summary-card">
-      <div class="sc-icon">🥗</div>
+      <div class="sc-icon"><i class="fa-solid fa-utensils" style="color: #38BDF8;"></i></div>
       <!-- number filter (syllabus: Built-in Filters) -->
       <div class="sc-val">{{ pg.avgCaloriesMonth() | number:0 }}</div>
       <div class="sc-lbl">Avg kcal/day</div>
@@ -87,8 +87,8 @@
         <div class="goal-card-top">
           <span class="period-tag">{{ goal.period }}</span>
           <div class="goal-card-acts">
-            <button class="icon-btn" ng-click="pg.editGoal(goal)">✏️</button>
-            <button class="icon-btn danger" ng-click="pg.deleteGoal(goal._id)">🗑</button>
+            <button class="icon-btn" ng-click="pg.editGoal(goal)"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="icon-btn danger" ng-click="pg.deleteGoal(goal._id)"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         </div>
 
@@ -120,21 +120,21 @@
 
     <!-- Empty Goals -->
     <div class="empty-state" ng-show="pg.filteredGoals().length === 0 && !pg.loading">
-      <div class="empty-icon">🎯</div>
+      <div class="empty-icon"><i class="fa-solid fa-bullseye"></i></div>
       <h3>No goals yet</h3>
       <p>Set goals to stay motivated and track your progress</p>
-      <button class="btn-primary" ng-click="pg.openGoalForm()">Set a Goal</button>
+      <button class="btn-primary" ng-click="pg.openGoalForm()"><i class="fa-solid fa-plus"></i> Set a Goal</button>
     </div>
   </div>
 
   <!-- Insights -->
   <div class="card" ng-show="pg.insights.length > 0">
-    <div class="card-hdr"><h3>💡 Weekly Insights</h3></div>
+    <div class="card-hdr"><h3><i class="fa-solid fa-lightbulb" style="color: #FACC15;"></i> Weekly Insights</h3></div>
     <div class="insights-list">
       <div class="insight-item"
            ng-repeat="ins in pg.insights"
            ng-class="'insight-'+ins.type">
-        <span class="ins-icon">{{ ins.icon }}</span>
+        <span class="ins-icon"><i class="fa-solid {{ ins.icon }}"></i></span>
         <div>
           <div class="ins-title">{{ ins.title }}</div>
           <div class="ins-msg">{{ ins.message }}</div>
@@ -148,7 +148,7 @@
     <div class="modal" ng-click="$event.stopPropagation()">
       <div class="modal-hdr">
         <h3>{{ pg.editingGoalId ? 'Edit Goal' : 'Set New Goal' }}</h3>
-        <button class="modal-close" ng-click="pg.closeGoalForm()">✕</button>
+        <button class="modal-close" ng-click="pg.closeGoalForm()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <form novalidate>
@@ -204,7 +204,7 @@
     <div class="modal modal-sm" ng-click="$event.stopPropagation()">
       <div class="modal-hdr">
         <h3>Update Progress</h3>
-        <button class="modal-close" ng-click="pg.showProgressModal=false">✕</button>
+        <button class="modal-close" ng-click="pg.showProgressModal=false"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <p class="prog-goal-name">{{ pg.updatingGoal.title }}</p>

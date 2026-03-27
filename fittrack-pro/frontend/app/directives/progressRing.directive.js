@@ -69,7 +69,7 @@ app.directive('statCard', function () {
     template:
       '<div class="stat-card">' +
         '<div class="stat-top">' +
-          '<span class="stat-icon">{{icon}}</span>' +
+          '<span class="stat-icon"><i class="fa-solid {{icon}}"></i></span>' +
         '</div>' +
         '<div class="stat-value">{{value | number:0}}<span class="stat-unit" ng-if="unit"> {{unit}}</span></div>' +
         '<div class="stat-label">{{label}}</div>' +

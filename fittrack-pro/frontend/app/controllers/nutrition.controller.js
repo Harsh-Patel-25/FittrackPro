@@ -25,8 +25,8 @@ function ($scope, NutritionService) {
     vm.form = {
       mealType: 'breakfast',
       date:     vm.selectedDate,
-      water:    0, notes: '',
-      foods: [{ name:'', quantity:100, unit:'g', calories:0, protein:0, carbs:0, fat:0 }]
+      water:    null, notes: '',
+      foods: [{ name:'', quantity:null, unit:'g', calories:null, protein:null, carbs:null, fat:null }]
     };
     vm.editingId = null;
   };
@@ -55,8 +55,8 @@ function ($scope, NutritionService) {
   };
 
   vm.mealTypeIcon = function (t) {
-    var m = { breakfast:'🌅', lunch:'☀️', dinner:'🌙', snack:'🍎', pre_workout:'⚡', post_workout:'💪' };
-    return m[t] || '🍽️';
+    var m = { breakfast:'fa-sun', lunch:'fa-cloud-sun', dinner:'fa-moon', snack:'fa-apple-whole', pre_workout:'fa-bolt', post_workout:'fa-dna' };
+    return m[t] || 'fa-utensils';
   };
 
   vm.openForm = function () {
@@ -79,7 +79,7 @@ function ($scope, NutritionService) {
   vm.closeForm = function () { vm.showForm = false; vm.editingId = null; vm.error = ''; };
 
   vm.addFood = function () {
-    vm.form.foods.push({ name:'', quantity:100, unit:'g', calories:0, protein:0, carbs:0, fat:0 });
+    vm.form.foods.push({ name:'', quantity:null, unit:'g', calories:null, protein:null, carbs:null, fat:null });
   };
 
   vm.removeFood = function (i) { vm.form.foods.splice(i, 1); };
@@ -98,7 +98,7 @@ function ($scope, NutritionService) {
 
     promise
       .then(function () {
-        vm.saving = false; vm.successMsg = 'Meal logged! 🥗';
+        vm.saving = false; vm.successMsg = 'Meal logged!';
         vm.closeForm(); vm.loadData();
         setTimeout(function () { $scope.$apply(function () { vm.successMsg = ''; }); }, 3000);
       })

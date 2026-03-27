@@ -79,7 +79,7 @@ function ($scope, $rootScope, ProgressService, GoalService, AuthService) {
 
   // ── Mood emoji map ────────────────────────────────────────────────────────
   vm.moodEmoji = function (m) {
-    var map = { terrible:'😤', bad:'😞', okay:'😐', good:'😊', great:'🔥' };
-    return map[m] || '😊';
+    var map = { terrible:'fa-face-angry', bad:'fa-face-frown', okay:'fa-face-meh', good:'fa-face-smile', great:'fa-fire' };
+    return map[m] || 'fa-face-smile';
   };
 }]);

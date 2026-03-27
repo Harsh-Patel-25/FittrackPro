@@ -124,19 +124,19 @@ exports.getWeeklyInsights = async (req, res, next) => {
     const insights = [];
 
     // Workout frequency insight
-    if (workouts.count >= 5) insights.push({ type: 'positive', icon: '🔥', title: 'Crushing It!', message: `You worked out ${workouts.count} times this week. Excellent consistency!` });
-    else if (workouts.count >= 3) insights.push({ type: 'neutral', icon: '💪', title: 'Good Momentum', message: `${workouts.count} workouts this week. Try to hit 5 for optimal results.` });
-    else insights.push({ type: 'warning', icon: '⚡', title: 'Step It Up', message: `Only ${workouts.count} workout(s) this week. Aim for at least 3–4 sessions.` });
+    if (workouts.count >= 5) insights.push({ type: 'positive', icon: 'fa-fire', title: 'Crushing It!', message: `You worked out ${workouts.count} times this week. Excellent consistency!` });
+    else if (workouts.count >= 3) insights.push({ type: 'neutral', icon: 'fa-dumbbell', title: 'Good Momentum', message: `${workouts.count} workouts this week. Try to hit 5 for optimal results.` });
+    else insights.push({ type: 'warning', icon: 'fa-bolt', title: 'Step It Up', message: `Only ${workouts.count} workout(s) this week. Aim for at least 3–4 sessions.` });
 
     // Protein insight
-    if (nutrition.avgProtein < 50) insights.push({ type: 'warning', icon: '🥩', title: 'Low Protein Intake', message: `Your avg protein is ${Math.round(nutrition.avgProtein)}g/day. Aim for 0.8–1g per lb of body weight.` });
-    else insights.push({ type: 'positive', icon: '✅', title: 'Great Protein Intake', message: `Averaging ${Math.round(nutrition.avgProtein)}g protein/day. Keep fueling those muscles!` });
+    if (nutrition.avgProtein < 50) insights.push({ type: 'warning', icon: 'fa-dna', title: 'Low Protein Intake', message: `Your avg protein is ${Math.round(nutrition.avgProtein)}g/day. Aim for 0.8–1g per lb of body weight.` });
+    else insights.push({ type: 'positive', icon: 'fa-check-circle', title: 'Great Protein Intake', message: `Averaging ${Math.round(nutrition.avgProtein)}g protein/day. Keep fueling those muscles!` });
 
     // Water insight
-    if (nutrition.avgWater < 2000) insights.push({ type: 'warning', icon: '💧', title: 'Hydration Alert', message: `You're averaging ${Math.round(nutrition.avgWater)}ml/day. Aim for 2,500–3,000ml.` });
+    if (nutrition.avgWater < 2000) insights.push({ type: 'warning', icon: 'fa-droplet', title: 'Hydration Alert', message: `You're averaging ${Math.round(nutrition.avgWater)}ml/day. Aim for 2,500–3,000ml.` });
 
     // Streak insight
-    if (user.streak?.current >= 7) insights.push({ type: 'positive', icon: '🏆', title: `${user.streak.current}-Day Streak!`, message: 'Incredible dedication! You\'re building a lasting habit.' });
+    if (user.streak?.current >= 7) insights.push({ type: 'positive', icon: 'fa-trophy', title: `${user.streak.current}-Day Streak!`, message: 'Incredible dedication! You\'re building a lasting habit.' });
 
     res.json({ success: true, data: { insights, stats: { workouts, nutrition, streak: user.streak } } });
   } catch (error) {

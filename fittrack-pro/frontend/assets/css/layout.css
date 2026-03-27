@@ -7,17 +7,18 @@
 /* ─── Sidebar ────────────────────────────────────────────────────────────────── */
 .sidebar {
   width: 240px;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--bg-secondary);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 20px 0 0; /* No bottom padding, handled by btn margin */
   position: sticky;
   top: 0;
   transition: width 0.2s ease;
   z-index: 100;
   flex-shrink: 0;
+  overflow: hidden; /* Container doesn't scroll, internal parts do */
 }
 .sidebar.collapsed { width: 68px; }
 
@@ -27,6 +28,7 @@
   border-bottom: 1px solid var(--border);
   margin-bottom: 16px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .logo-badge {
   width: 36px; height: 36px; border-radius: 10px;
@@ -36,7 +38,16 @@
 }
 .logo-text { font-size: 15px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
 
-.sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 10px; }
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 10px;
+  overflow-y: auto;
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+.sidebar-nav::-webkit-scrollbar { display: none; }
 
 .nav-item {
   display: flex; align-items: center; gap: 12px;
@@ -57,12 +68,13 @@
 }
 
 .sidebar-user {
-  margin: 12px 10px 0;
+  margin: 16px 10px 0;
   padding: 12px;
   background: var(--bg-hover);
   border-radius: 12px;
   display: flex; align-items: center; gap: 10px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .user-avatar-sm {
   width: 34px; height: 34px; border-radius: 50%;
@@ -74,10 +86,11 @@
 .user-streak    { font-size: 11px; color: var(--text-secondary); }
 
 .collapse-btn {
-  margin: 10px 10px 0; padding: 8px;
+  margin: 10px 10px 24px; padding: 8px;
   background: transparent; border: 1px solid var(--border);
   border-radius: 8px; color: var(--text-secondary);
   cursor: pointer; font-size: 12px; transition: all 0.2s;
+  flex-shrink: 0;
 }
 .collapse-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
 

@@ -5,12 +5,12 @@
   <!-- Greeting Row -->
   <div class="greeting-row">
     <div>
-      <h2 class="greeting-text">{{ dash.greeting() }}, {{ dash.firstName() }} 👋</h2>
+      <h2 class="greeting-text">{{ dash.greeting() }}, {{ dash.firstName() }}</h2>
       <p class="greeting-sub">Here's your fitness summary for today</p>
     </div>
     <!-- ng-if (syllabus: ng-if) -->
     <div class="streak-badge" ng-if="dash.summary && dash.summary.streak.current > 0">
-      <span class="streak-flame">🔥</span>
+      <span class="streak-flame"><i class="fa-solid fa-fire"></i></span>
       <div>
         <div class="streak-num">{{ dash.summary.streak.current }}</div>
         <div class="streak-lbl">Day Streak</div>
@@ -26,42 +26,42 @@
 
   <!-- Stat Cards using custom directive (syllabus: Custom Directive) -->
   <div class="stats-grid" ng-show="!dash.loading && dash.summary">
-    <stat-card icon="🍽️"
+    <stat-card icon="fa-utensils"
                value="dash.summary.today.caloriesIn"
                label="Calories In"
                unit="kcal"
                progress="dash.calorieInPct()"
                color="green">
     </stat-card>
-    <stat-card icon="🔥"
+    <stat-card icon="fa-fire"
                value="dash.summary.today.caloriesBurned"
                label="Calories Burned"
                unit="kcal"
                progress="dash.calorieOutPct()"
                color="orange">
     </stat-card>
-    <stat-card icon="💪"
+    <stat-card icon="fa-dna"
                value="dash.summary.today.protein"
                label="Protein"
                unit="g"
                progress="dash.proteinPct()"
                color="blue">
     </stat-card>
-    <stat-card icon="🏋️"
+    <stat-card icon="fa-dumbbell"
                value="dash.summary.today.workouts"
                label="Workouts Today"
                unit=""
                progress="dash.workoutPct()"
                color="green">
     </stat-card>
-    <stat-card icon="💧"
+    <stat-card icon="fa-droplet"
                value="dash.summary.today.water"
                label="Water Intake"
                unit="ml"
                progress="dash.waterPct()"
                color="blue">
     </stat-card>
-    <stat-card icon="⏱️"
+    <stat-card icon="fa-stopwatch"
                value="dash.summary.today.workoutDuration"
                label="Active Time"
                unit="min"
@@ -77,7 +77,7 @@
     <div class="card" ng-show="dash.summary">
       <div class="card-hdr">
         <h3>This Week</h3>
-        <a href="#!/progress" class="card-link">View all →</a>
+        <a href="#!/progress" class="card-link">View all <i class="fa-solid fa-arrow-right"></i></a>
       </div>
       <div class="weekly-row">
         <div class="wstat-item">
@@ -128,7 +128,7 @@
     <div class="card">
       <div class="card-hdr">
         <h3>Active Goals</h3>
-        <a href="#!/progress" class="card-link">Manage →</a>
+        <a href="#!/progress" class="card-link">Manage <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
       <!-- ng-repeat (syllabus: ng-repeat) -->
@@ -155,13 +155,13 @@
 
   <!-- Weekly Insights -->
   <div class="card" ng-show="dash.insights.length > 0">
-    <div class="card-hdr"><h3>💡 Weekly Insights</h3></div>
+    <div class="card-hdr"><h3><i class="fa-solid fa-lightbulb" style="color: #FACC15;"></i> Weekly Insights</h3></div>
     <div class="insights-grid">
       <!-- ng-repeat with ng-class (syllabus: ng-class) -->
       <div class="insight-item"
            ng-class="'insight-' + ins.type"
            ng-repeat="ins in dash.insights">
-        <span class="ins-icon">{{ ins.icon }}</span>
+        <span class="ins-icon"><i class="fa-solid {{ ins.icon }}"></i></span>
         <div>
           <div class="ins-title">{{ ins.title }}</div>
           <div class="ins-msg">{{ ins.message }}</div>
@@ -176,14 +176,14 @@
     <div class="actions-grid">
       <!-- ng-repeat over action array (syllabus: Arrays as member in controller scope) -->
       <a ng-repeat="action in [
-           {href:'#/workouts', icon:'🏋️', label:'Log Workout'},
-           {href:'#/nutrition', icon:'🥗', label:'Log Meal'},
-           {href:'#/progress', icon:'📊', label:'View Progress'},
-           {href:'#/settings', icon:'🎯', label:'Set Goals'}
+           {href:'#/workouts', icon:'fa-dumbbell', label:'Log Workout'},
+           {href:'#/nutrition', icon:'fa-utensils', label:'Log Meal'},
+           {href:'#/progress', icon:'fa-chart-line', label:'View Progress'},
+           {href:'#/settings', icon:'fa-bullseye', label:'Set Goals'}
          ]"
          href="{{ action.href }}"
          class="action-card">
-        <span class="action-icon">{{ action.icon }}</span>
+        <span class="action-icon"><i class="fa-solid {{ action.icon }}"></i></span>
         <span>{{ action.label }}</span>
       </a>
     </div>

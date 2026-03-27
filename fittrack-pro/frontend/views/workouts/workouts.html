@@ -5,15 +5,15 @@
   <!-- Page Header -->
   <div class="page-hdr">
     <div>
-      <h2 class="page-title">Workouts 🏋️</h2>
+      <h2 class="page-title">Workouts <i class="fa-solid fa-dumbbell"></i></h2>
       <p class="page-sub">Track and manage your training sessions</p>
     </div>
     <!-- ng-click (syllabus: ng-click Event Directive) -->
-    <button class="btn-primary" ng-click="wk.openForm()">+ Log Workout</button>
+    <button class="btn-primary" ng-click="wk.openForm()"><i class="fa-solid fa-plus"></i> Log Workout</button>
   </div>
 
   <!-- Success message (ng-show) -->
-  <div class="success-banner" ng-show="wk.successMsg">✅ {{ wk.successMsg }}</div>
+  <div class="success-banner" ng-show="wk.successMsg"><i class="fa-solid fa-circle-check"></i> {{ wk.successMsg }}</div>
 
   <!-- Filter Chips (ng-repeat + ng-click + ng-class) -->
   <div class="filter-row">
@@ -21,7 +21,7 @@
             class="filter-chip"
             ng-class="{'active': wk.activeFilter === ft.value}"
             ng-click="wk.setFilter(ft.value)">
-      {{ ft.label }}
+      <i class="fa-solid {{ ft.icon }}"></i> {{ ft.label }}
     </button>
   </div>
 
@@ -52,11 +52,13 @@
   <div class="workouts-grid" ng-hide="wk.loading">
     <div class="workout-card" ng-repeat="w in wk.workouts">
       <div class="wcard-header">
-        <span class="type-badge" ng-class="'badge-'+w.type">{{ wk.typeLabel(w.type) }}</span>
+        <span class="type-badge" ng-class="'badge-'+w.type">
+          <i class="fa-solid {{ wk.typeIcon(w.type) }}"></i> {{ wk.typeLabel(w.type) }}
+        </span>
         <div class="card-actions">
           <!-- ng-click with parameter passing (syllabus: Passing parameters to method) -->
-          <button class="icon-btn" ng-click="wk.editWorkout(w)" title="Edit">✏️</button>
-          <button class="icon-btn danger" ng-click="wk.deleteWorkout(w._id)" title="Delete">🗑</button>
+          <button class="icon-btn" ng-click="wk.editWorkout(w)" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button class="icon-btn danger" ng-click="wk.deleteWorkout(w._id)" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
         </div>
       </div>
 
@@ -64,11 +66,11 @@
 
       <div class="wcard-meta">
         <!-- Using relativeDate custom filter (syllabus: Creating Custom Filters) -->
-        <span>📅 {{ w.date | relativeDate }}</span>
+        <span><i class="fa-solid fa-calendar"></i> {{ w.date | relativeDate }}</span>
         <!-- Using durationFmt custom filter -->
-        <span>⏱ {{ w.duration | durationFmt }}</span>
+        <span><i class="fa-solid fa-stopwatch"></i> {{ w.duration | durationFmt }}</span>
         <!-- Using caloriesFmt custom filter -->
-        <span>🔥 {{ w.totalCaloriesBurned | caloriesFmt }}</span>
+        <span><i class="fa-solid fa-fire"></i> {{ w.totalCaloriesBurned | caloriesFmt }}</span>
       </div>
 
       <div class="intensity-row">
@@ -87,7 +89,7 @@
       </div>
 
       <div class="mood-row" ng-if="w.mood">
-        <span>{{ wk.moodEmoji(w.mood) }}</span>
+        <span><i class="fa-solid {{ wk.moodIcon(w.mood) }}"></i></span>
         <span class="mood-lbl">{{ w.mood }}</span>
       </div>
     </div>
@@ -95,19 +97,19 @@
 
   <!-- Empty State (ng-show) -->
   <div class="empty-state" ng-show="!wk.loading && wk.workouts.length === 0">
-    <div class="empty-icon">🏋️</div>
+    <div class="empty-icon"><i class="fa-solid fa-dumbbell"></i></div>
     <h3>No workouts yet</h3>
     <p>Log your first session to start tracking progress</p>
-    <button class="btn-primary" ng-click="wk.openForm()">Log Workout</button>
+    <button class="btn-primary" ng-click="wk.openForm()"><i class="fa-solid fa-plus"></i> Log Workout</button>
   </div>
 
   <!-- Pagination -->
   <div class="pagination" ng-show="wk.totalPages > 1">
     <button class="page-btn" ng-disabled="wk.currentPage === 1"
-            ng-click="wk.changePage(wk.currentPage - 1)">← Prev</button>
+            ng-click="wk.changePage(wk.currentPage - 1)"><i class="fa-solid fa-arrow-left"></i> Prev</button>
     <span class="page-info">{{ wk.currentPage }} / {{ wk.totalPages }}</span>
     <button class="page-btn" ng-disabled="wk.currentPage === wk.totalPages"
-            ng-click="wk.changePage(wk.currentPage + 1)">Next →</button>
+            ng-click="wk.changePage(wk.currentPage + 1)">Next <i class="fa-solid fa-arrow-right"></i></button>
   </div>
 
   <!-- ── Modal (ng-show) ───────────────────────────────────────────────────── -->
@@ -116,7 +118,7 @@
 
       <div class="modal-hdr">
         <h3>{{ wk.editingId ? 'Edit Workout' : 'Log Workout' }}</h3>
-        <button class="modal-close" ng-click="wk.closeForm()">✕</button>
+        <button class="modal-close" ng-click="wk.closeForm()"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <div class="modal-body">
@@ -166,7 +168,7 @@
           <div class="exercises-box">
             <div class="ex-box-hdr">
               <span>Exercises</span>
-              <button type="button" class="add-item-btn" ng-click="wk.addExercise()">+ Add</button>
+              <button type="button" class="add-item-btn" ng-click="wk.addExercise()"><i class="fa-solid fa-plus"></i> Add</button>
             </div>
 
             <!-- ng-repeat over exercises array -->
@@ -182,7 +184,7 @@
                 <input type="number" ng-model="ex.weight" placeholder="kg" class="ex-num" />
                 <input type="number" ng-model="ex.caloriesBurned" placeholder="kcal" class="ex-num" />
                 <!-- ng-click with $index (syllabus: Passing parameters to method) -->
-                <button type="button" class="ex-del" ng-click="wk.removeExercise($index)">✕</button>
+                <button type="button" class="ex-del" ng-click="wk.removeExercise($index)"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
 

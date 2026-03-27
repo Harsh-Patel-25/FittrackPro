@@ -4,7 +4,7 @@
 
   <div class="page-hdr">
     <div>
-      <h2 class="page-title">Settings ⚙️</h2>
+      <h2 class="page-title">Settings <i class="fa-solid fa-gear"></i></h2>
       <p class="page-sub">Manage your profile and preferences</p>
     </div>
   </div>
@@ -13,14 +13,14 @@
 
     <!-- Profile Card -->
     <div class="settings-card">
-      <div class="card-section-title">👤 Profile</div>
+      <div class="card-section-title"><i class="fa-solid fa-user"></i> Profile</div>
 
       <div class="avatar-row">
         <div class="big-avatar">{{ st.initials() }}</div>
         <div>
           <div class="av-name">{{ st.user.name }}</div>
           <div class="av-email">{{ st.user.email }}</div>
-          <div class="av-pts" ng-if="st.user.totalPoints">⭐ {{ st.user.totalPoints }} pts</div>
+          <div class="av-pts" ng-if="st.user.totalPoints"><i class="fa-solid fa-star" style="color: #FACC15;"></i> {{ st.user.totalPoints }} pts</div>
         </div>
       </div>
 
@@ -79,7 +79,7 @@
         </div>
 
         <!-- ng-show for success / error -->
-        <div class="success-banner" ng-show="st.profileSaved">✅ Profile saved successfully!</div>
+        <div class="success-banner" ng-show="st.profileSaved"><i class="fa-solid fa-circle-check"></i> Profile saved successfully!</div>
 
         <div class="form-actions">
           <button type="button" class="btn-primary"
@@ -96,7 +96,7 @@
 
       <!-- Streak & Achievements -->
       <div class="settings-card">
-        <div class="card-section-title">🏆 Achievements</div>
+        <div class="card-section-title"><i class="fa-solid fa-trophy" style="color: #FACC15;"></i> Achievements</div>
         <div class="streak-grid">
           <div class="streak-box">
             <div class="sb-val">{{ st.user.streak && st.user.streak.current || 0 }}</div>
@@ -115,7 +115,7 @@
         <!-- ng-repeat for achievements (syllabus: ng-repeat) -->
         <div ng-if="st.user.achievements && st.user.achievements.length > 0">
           <div class="achievement-row" ng-repeat="a in st.user.achievements">
-            <span class="ach-icon">{{ a.icon || '🏅' }}</span>
+            <span class="ach-icon"><i class="fa-solid {{ a.icon || 'fa-medal' }}"></i></span>
             <div>
               <div class="ach-name">{{ a.name }}</div>
               <div class="ach-desc">{{ a.description }}</div>
@@ -123,13 +123,13 @@
           </div>
         </div>
         <div class="empty-ach" ng-if="!st.user.achievements || st.user.achievements.length === 0">
-          Complete workouts to earn achievements! 🎯
+          Complete workouts to earn achievements! <i class="fa-solid fa-bullseye"></i>
         </div>
       </div>
 
       <!-- Change Password -->
       <div class="settings-card">
-        <div class="card-section-title">🔒 Security</div>
+        <div class="card-section-title"><i class="fa-solid fa-shield-halved" style="color: #38BDF8;"></i> Security</div>
         <form name="pwForm" novalidate class="settings-form">
           <div class="form-group">
             <label>Current Password</label>
@@ -146,7 +146,7 @@
           </div>
 
           <div class="form-error-box" ng-show="st.pwError">{{ st.pwError }}</div>
-          <div class="success-banner" ng-show="st.pwSaved">✅ Password changed!</div>
+          <div class="success-banner" ng-show="st.pwSaved"><i class="fa-solid fa-circle-check"></i> Password changed!</div>
 
           <div class="form-actions">
             <button type="button" class="btn-outline"
@@ -160,8 +160,8 @@
 
       <!-- Logout -->
       <div class="settings-card danger-card">
-        <div class="card-section-title danger-title">⚠️ Account</div>
-        <button class="btn-danger" ng-click="st.logout()">🚪 Sign Out</button>
+        <div class="card-section-title danger-title"><i class="fa-solid fa-triangle-exclamation"></i> Account</div>
+        <button class="btn-danger" ng-click="st.logout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
       </div>
 
     </div>

@@ -16,6 +16,9 @@
   <link rel="stylesheet" href="assets/css/layout.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
 
+  <!-- Font Awesome 6.4.0 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
   <!-- AngularJS 1.8.3 CDN -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
@@ -29,7 +32,7 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar" ng-class="{'collapsed': app.sidebarCollapsed}">
       <div class="sidebar-logo">
-        <div class="logo-badge">⚡</div>
+        <div class="logo-badge"><i class="fa-solid fa-bolt"></i></div>
         <span class="logo-text" ng-show="!app.sidebarCollapsed">FitTrack Pro</span>
       </div>
 
@@ -39,7 +42,7 @@
            class="nav-item"
            ng-class="{'active': app.isActiveRoute(item.path)}"
            title="{{ item.label }}">
-          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-icon"><i class="fa-solid {{ item.icon }}"></i></span>
           <span class="nav-label" ng-show="!app.sidebarCollapsed">{{ item.label }}</span>
           <span class="active-dot" ng-show="app.isActiveRoute(item.path)"></span>
         </a>
@@ -49,12 +52,12 @@
         <div class="user-avatar-sm">{{ app.userInitials() }}</div>
         <div class="user-info-sm">
           <div class="user-name-sm">{{ app.currentUser.name }}</div>
-          <div class="user-streak">🔥 {{ app.currentUser.streak.current || 0 }} day streak</div>
+          <div class="user-streak"><i class="fa-solid fa-fire" style="color: #FB923C;"></i> {{ app.currentUser.streak.current || 0 }} day streak</div>
         </div>
       </div>
 
       <button class="collapse-btn" ng-click="app.sidebarCollapsed = !app.sidebarCollapsed">
-        {{ app.sidebarCollapsed ? '→' : '←' }}
+        <i class="fa-solid" ng-class="app.sidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
       </button>
     </aside>
 
@@ -67,17 +70,17 @@
         </div>
         <div class="topbar-right">
           <div class="points-pill">
-            <span>⭐</span>
+            <i class="fa-solid fa-star" style="color: #FACC15;"></i>
             <span>{{ app.currentUser.totalPoints || 0 }} pts</span>
           </div>
-          <button class="notif-btn">🔔</button>
+          <button class="notif-btn"><i class="fa-solid fa-bell"></i></button>
           <div class="topbar-avatar" ng-click="app.userMenuOpen = !app.userMenuOpen">
             {{ app.userInitials() }}
           </div>
           <div class="user-dropdown" ng-show="app.userMenuOpen">
-            <a href="#!/settings" class="dd-item" ng-click="app.userMenuOpen=false">⚙️ Settings</a>
+            <a href="#!/settings" class="dd-item" ng-click="app.userMenuOpen=false"><i class="fa-solid fa-gear"></i> Settings</a>
             <div class="dd-sep"></div>
-            <button class="dd-item danger" ng-click="app.logout()">🚪 Logout</button>
+            <button class="dd-item danger" ng-click="app.logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
           </div>
         </div>
       </header>

@@ -42,18 +42,18 @@ function ($scope, $location, AuthService) {
   vm.registerLoading = false;
 
   vm.fitnessGoals = [
-    { value: 'lose_weight',       label: '🏃 Lose Weight' },
-    { value: 'maintain',          label: '⚖️ Maintain Weight' },
-    { value: 'gain_muscle',       label: '💪 Gain Muscle' },
-    { value: 'improve_endurance', label: '🏅 Improve Endurance' }
+    { value: 'lose_weight',       label: 'Lose Weight' },
+    { value: 'maintain',          label: 'Maintain Weight' },
+    { value: 'gain_muscle',       label: 'Gain Muscle' },
+    { value: 'improve_endurance', label: 'Improve Endurance' }
   ];
 
   vm.activityLevels = [
-    { value: 'sedentary',  label: '😴 Sedentary' },
-    { value: 'light',      label: '🚶 Lightly Active' },
-    { value: 'moderate',   label: '🏋️ Moderately Active' },
-    { value: 'active',     label: '🏃 Active' },
-    { value: 'very_active',label: '⚡ Very Active' }
+    { value: 'sedentary',  label: 'Sedentary' },
+    { value: 'light',      label: 'Lightly Active' },
+    { value: 'moderate',   label: 'Moderately Active' },
+    { value: 'active',     label: 'Active' },
+    { value: 'very_active',label: 'Very Active' }
   ];
 
   vm.register = function (registerForm) {

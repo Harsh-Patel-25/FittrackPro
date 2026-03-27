@@ -3,10 +3,10 @@
 
 /* ─── CSS Variables ─────────────────────────────────────────────────────────── */
 :root {
-  --bg-primary:    #0F172A;
-  --bg-secondary:  #1E293B;
-  --bg-card:       #1E293B;
-  --bg-hover:      #293548;
+  --bg-primary:    #000000;
+  --bg-secondary:  #000000;
+  --bg-card:       #000000;
+  --bg-hover:      #000000;
   --border:        #334155;
   --accent-green:  #22C55E;
   --accent-blue:   #38BDF8;
@@ -93,3 +93,18 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cur
   animation: spin 0.6s linear infinite;
   vertical-align: middle;
 }
+
+/* ── Font Awesome ────────────────────────────────────────────────────────────── */
+.fa-solid, .fa-brands, .fa-regular {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.success-banner i { margin-right: 8px; }
+.form-error-box i { margin-right: 8px; }
+.btn-primary i { font-size: 0.9em; }
+.modal-close i { font-size: 1.1em; }
+.nav-icon i { width: 24px; }
+
